@@ -2,7 +2,7 @@
 
 import { db } from "@/server";
 
-import { posts } from "../schema";
+import { posts } from "../schemas";
 import { revalidatePath } from "next/cache";
 
 export default async function createPost(data: FormData) {
