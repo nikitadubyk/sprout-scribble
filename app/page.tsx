@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import getPosts from "@/server/actions/get-posts";
 import createPost from "@/server/actions/create-post";
 
@@ -18,7 +19,7 @@ export default async function Home() {
       <form action={createPost}>
         <input type="text" name="title" placeholder="text" />
 
-        <button type="submit">submit</button>
+        <Button type="submit">submit</Button>
       </form>
     </main>
   );
