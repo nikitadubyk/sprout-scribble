@@ -1,5 +1,4 @@
-import { verificationTokens } from "./../schemas/auth";
-("use server");
+"use server";
 
 import bcrypt from "bcrypt";
 import { eq } from "drizzle-orm";
