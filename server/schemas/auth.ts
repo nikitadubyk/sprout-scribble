@@ -1,6 +1,7 @@
 import type { AdapterAccountType } from "next-auth/adapters";
 import {
   text,
+  pgEnum,
   boolean,
   pgTable,
   integer,
@@ -8,32 +9,41 @@ import {
   primaryKey,
 } from "drizzle-orm/pg-core";
 
+import { Role } from "@/types";
+
+export const Roles = pgEnum(
+  "roles",
+  Object.values(Role) as [string, ...string[]]
+);
+
 export const users = pgTable("user", {
+  name: text("name"),
+  image: text("image"),
+  email: text("email").notNull(),
+  role: Roles("roles").default(Role.User),
+  emailVerified: timestamp("emailVerified", { mode: "date" }),
+  twoFactorEnabled: boolean("twoFactorEnabled").default(false),
   id: text("id")
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  name: text("name"),
-  email: text("email").notNull(),
-  emailVerified: timestamp("emailVerified", { mode: "date" }),
-  image: text("image"),
 });
 
 export const accounts = pgTable(
   "account",
   {
+    scope: text("scope"),
+    id_token: text("id_token"),
+    token_type: text("token_type"),
+    expires_at: integer("expires_at"),
+    access_token: text("access_token"),
+    provider: text("provider").notNull(),
+    refresh_token: text("refresh_token"),
+    session_state: text("session_state"),
+    providerAccountId: text("providerAccountId").notNull(),
+    type: text("type").$type<AdapterAccountType>().notNull(),
     userId: text("userId")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
-    type: text("type").$type<AdapterAccountType>().notNull(),
-    provider: text("provider").notNull(),
-    providerAccountId: text("providerAccountId").notNull(),
-    refresh_token: text("refresh_token"),
-    access_token: text("access_token"),
-    expires_at: integer("expires_at"),
-    token_type: text("token_type"),
-    scope: text("scope"),
-    id_token: text("id_token"),
-    session_state: text("session_state"),
   },
   (account) => ({
     compoundKey: primaryKey({
@@ -44,17 +54,17 @@ export const accounts = pgTable(
 
 export const sessions = pgTable("session", {
   sessionToken: text("sessionToken").primaryKey(),
+  expires: timestamp("expires", { mode: "date" }).notNull(),
   userId: text("userId")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
-  expires: timestamp("expires", { mode: "date" }).notNull(),
 });
 
 export const verificationTokens = pgTable(
   "verificationToken",
   {
-    identifier: text("identifier").notNull(),
     token: text("token").notNull(),
+    identifier: text("identifier").notNull(),
     expires: timestamp("expires", { mode: "date" }).notNull(),
   },
   (verficationToken) => ({
@@ -67,16 +77,16 @@ export const verificationTokens = pgTable(
 export const authenticators = pgTable(
   "authenticator",
   {
+    transports: text("transports"),
+    counter: integer("counter").notNull(),
     credentialID: text("credentialID").notNull().unique(),
+    providerAccountId: text("providerAccountId").notNull(),
+    credentialPublicKey: text("credentialPublicKey").notNull(),
+    credentialBackedUp: boolean("credentialBackedUp").notNull(),
+    credentialDeviceType: text("credentialDeviceType").notNull(),
     userId: text("userId")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
-    providerAccountId: text("providerAccountId").notNull(),
-    credentialPublicKey: text("credentialPublicKey").notNull(),
-    counter: integer("counter").notNull(),
-    credentialDeviceType: text("credentialDeviceType").notNull(),
-    credentialBackedUp: boolean("credentialBackedUp").notNull(),
-    transports: text("transports"),
   },
   (authenticator) => ({
     compositePK: primaryKey({

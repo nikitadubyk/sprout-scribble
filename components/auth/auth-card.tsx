@@ -53,9 +53,7 @@ export const AuthCard = ({
         <Button
           variant="outline"
           className="w-full flex gap-4"
-          onClick={() =>
-            signIn("github", { redirect: false, callbackUrl: "/" })
-          }
+          onClick={() => signIn("github", { callbackUrl: "/" })}
         >
           <LogIn />
           Sign in with Github
@@ -63,7 +61,7 @@ export const AuthCard = ({
       </CardFooter>
     )}
     <CardFooter>
-      <Button asChild className="w-full font-medium">
+      <Button asChild variant="link" className="w-full font-medium">
         <Link href={backPath} aria-label={backButtonLabel}>
           {backButtonLabel}
         </Link>

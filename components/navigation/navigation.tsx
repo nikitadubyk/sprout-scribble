@@ -5,9 +5,13 @@ import { LogIn } from "lucide-react";
 import { Routes } from "@/config";
 import { auth } from "@/server/auth";
 import logo from "@/public/logo.svg";
+import { joinStrings } from "@/utils/helpers";
+
+import { Button } from "../ui/button";
 
 import { UserInfo } from "./user-info";
-import { Button } from "../ui/button";
+
+const { Home, Login } = Routes.Auth;
 
 /*
  * Header component in all pages.
@@ -20,14 +24,19 @@ export default async function Navigation() {
       <nav>
         <ul className="py-8 flex justify-between items-center">
           <li>
-            <Image src={logo} alt="logo" />
+            <Link href="/">
+              <Image src={logo} alt="logo" />
+            </Link>
           </li>
           <li>
             {session?.user ? (
               <UserInfo user={session?.user} />
             ) : (
               <Button asChild>
-                <Link href={Routes.Auth.Login} className="flex gap-2">
+                <Link
+                  className="flex gap-2"
+                  href={joinStrings([Home, Login], "/")}
+                >
                   <LogIn size={16} />
                   Login
                 </Link>

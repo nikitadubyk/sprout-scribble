@@ -22,6 +22,13 @@
       "when": 1717158745165,
       "tag": "0002_mighty_micromacro",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1717230079539,
+      "tag": "0003_even_xavin",
+      "breakpoints": true
     }
   ]
 }
