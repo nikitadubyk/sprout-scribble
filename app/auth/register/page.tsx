@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { useAction } from "next-safe-action/hooks";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,19 +7,37 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Routes } from "@/config";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
 import { emailRegister } from "@/server/actions/auth";
 import { InputField } from "@/components/fields/input";
 import { AuthCard } from "@/components/auth/auth-card";
 
 import { FormValues, defaultValues, registerValidationSchema } from "./config";
 
-const { Login, ResetPassword } = Routes.Auth;
+const { Login } = Routes.Auth;
 
 /*
  * Register page with form.
  **/
 export default function Register() {
-  const { execute } = useAction(emailRegister);
+  const { toast } = useToast();
+
+  const { execute } = useAction(emailRegister, {
+    onSuccess: (data) => {
+      toast(
+        data?.error
+          ? {
+              variant: "destructive",
+              description: data.error,
+              title: "Uh oh! Something went wrong.",
+            }
+          : {
+              title: "Account successfully created!",
+              description: " Mail confirmation letter has been sent",
+            }
+      );
+    },
+  });
 
   const form = useForm<FormValues>({
     defaultValues,

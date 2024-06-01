@@ -9,6 +9,7 @@ import { loginValidationSchema, registerValidationSchema } from "@/types";
 import { db } from "..";
 import { users } from "../schemas";
 import { generateVerificationEmailToken } from "./tokens";
+import { sendVerificationEmail } from "./email";
 
 export const emailSignIn = action(
   loginValidationSchema,
@@ -38,8 +39,8 @@ export const emailRegister = action(
 
     if (user) {
       if (!user.emailVerified) {
-        const verificationToken = await generateVerificationEmailToken(email);
-        // await sentVerificationEmail();
+        const [verificationToken] = await generateVerificationEmailToken(email);
+        await sendVerificationEmail(email, verificationToken.token);
         return { success: "Email confirmation sent" };
       }
       return { error: "User with this email address is already registered" };
@@ -53,8 +54,8 @@ export const emailRegister = action(
       password: hashPassword,
     });
 
-    const verificationToken = await generateVerificationEmailToken(email);
-    // await sentVerificationEmail();
+    const [verificationToken] = await generateVerificationEmailToken(email);
+    await sendVerificationEmail(email, verificationToken.token);
     return { success: "Email confirmation sent" };
   }
 );

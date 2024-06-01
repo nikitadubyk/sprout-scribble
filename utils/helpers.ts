@@ -15,3 +15,8 @@ export const joinStrings = (
   const data = values.filter((value) => value && value?.length > 0) as string[];
   return data.length === 0 ? placeholder ?? "" : data.join(separator);
 };
+
+export const getBaseURL = () => {
+  if (typeof window !== "undefined") return;
+  if (process.env.VERCEL_URL) return `https://${process.env.DOMAIN_URL}`;
+};

@@ -3,6 +3,7 @@ const Auth = {
   Login: "login",
   Register: "register",
   ResetPassword: "reset-password",
+  NewVerification: "new-verification",
 };
 
 export const Routes = {
