@@ -1,12 +1,15 @@
-"use server";
+import { verificationTokens } from "./../schemas/auth";
+("use server");
 
+import bcrypt from "bcrypt";
 import { eq } from "drizzle-orm";
 
 import { action } from "@/lib/safe-action";
-import { loginValidationSchema } from "@/types";
+import { loginValidationSchema, registerValidationSchema } from "@/types";
 
 import { db } from "..";
 import { users } from "../schemas";
+import { generateVerificationEmailToken } from "./tokens";
 
 export const emailSignIn = action(
   loginValidationSchema,
@@ -24,5 +27,35 @@ export const emailSignIn = action(
     // }
 
     return { succes: user };
+  }
+);
+
+export const emailRegister = action(
+  registerValidationSchema,
+  async ({ name, email, password }) => {
+    const user = await db.query.users.findFirst({
+      where: eq(users.email, email),
+    });
+
+    if (user) {
+      if (!user.emailVerified) {
+        const verificationToken = await generateVerificationEmailToken(email);
+        // await sentVerificationEmail();
+        return { success: "Email confirmation sent" };
+      }
+      return { error: "User with this email address is already registered" };
+    }
+
+    const hashPassword = bcrypt.hashSync(password, 15);
+
+    await db.insert(users).values({
+      name,
+      email,
+      password: hashPassword,
+    });
+
+    const verificationToken = await generateVerificationEmailToken(email);
+    // await sentVerificationEmail();
+    return { success: "Email confirmation sent" };
   }
 );

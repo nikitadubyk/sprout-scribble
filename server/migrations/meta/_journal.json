@@ -29,6 +29,20 @@
       "when": 1717230079539,
       "tag": "0003_even_xavin",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1717232990299,
+      "tag": "0004_cool_frightful_four",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1717233955353,
+      "tag": "0005_fluffy_roulette",
+      "breakpoints": true
     }
   ]
 }

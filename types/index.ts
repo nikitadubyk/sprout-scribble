@@ -1,2 +1,2 @@
 export * from "./types";
-export { loginValidationSchema } from "./schemas";
+export { loginValidationSchema, registerValidationSchema } from "./schemas";

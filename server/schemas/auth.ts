@@ -1,3 +1,4 @@
+import { createId } from "@paralleldrive/cuid2";
 import type { AdapterAccountType } from "next-auth/adapters";
 import {
   text,
@@ -19,6 +20,7 @@ export const Roles = pgEnum(
 export const users = pgTable("user", {
   name: text("name"),
   image: text("image"),
+  password: text("password"),
   email: text("email").notNull(),
   role: Roles("roles").default(Role.User),
   emailVerified: timestamp("emailVerified", { mode: "date" }),
@@ -63,9 +65,10 @@ export const sessions = pgTable("session", {
 export const verificationTokens = pgTable(
   "verificationToken",
   {
+    email: text("email").notNull(),
     token: text("token").notNull(),
-    identifier: text("identifier").notNull(),
     expires: timestamp("expires", { mode: "date" }).notNull(),
+    identifier: text("identifier").notNull().$defaultFn(createId),
   },
   (verficationToken) => ({
     compositePk: primaryKey({
