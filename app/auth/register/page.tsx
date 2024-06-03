@@ -22,7 +22,7 @@ const { Login } = Routes.Auth;
 export default function Register() {
   const { toast } = useToast();
 
-  const { execute } = useAction(emailRegister, {
+  const { status, execute } = useAction(emailRegister, {
     onSuccess: (data) => {
       toast(
         data?.error
@@ -85,7 +85,7 @@ export default function Register() {
           <Button
             type="submit"
             className="my-2 w-full"
-            disabled={!isDirty || isSubmitting}
+            disabled={!isDirty || isSubmitting || status === "executing"}
           >
             Create account
           </Button>

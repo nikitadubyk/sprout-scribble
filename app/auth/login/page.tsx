@@ -28,7 +28,7 @@ export default function Login() {
     resolver: zodResolver(loginValidationSchema),
   });
 
-  const { execute } = useAction(emailSignIn, {
+  const { status, execute } = useAction(emailSignIn, {
     onSuccess: () => {
       form.reset();
       route.push("/");
@@ -71,7 +71,7 @@ export default function Login() {
           <Button
             type="submit"
             className="my-2 w-full"
-            disabled={!isDirty || isSubmitting}
+            disabled={!isDirty || isSubmitting || status === "executing"}
           >
             Login
           </Button>
