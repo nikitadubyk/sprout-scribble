@@ -6,6 +6,6 @@ export default defineConfig({
   schema: "./server/schemas",
   dialect: "postgresql", // 'postgresql' | 'mysql' | 'sqlite'
   dbCredentials: {
-    url: process.env.POSTGRES_URL as string,
+    url: process.env.NEXT_PUBLIC_POSTGRES_URL as string,
   },
 });

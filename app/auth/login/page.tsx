@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 import { useAction } from "next-safe-action/hooks";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -20,20 +21,24 @@ const { Register, ResetPassword } = Routes.Auth;
  * Login page with form.
  **/
 export default function Login() {
-  const { execute } = useAction(emailSignIn);
+  const route = useRouter();
 
   const form = useForm<FormValues>({
     defaultValues,
     resolver: zodResolver(loginValidationSchema),
   });
 
+  const { execute } = useAction(emailSignIn, {
+    onSuccess: () => {
+      form.reset();
+      route.push("/");
+      route.refresh();
+    },
+  });
+
   const { isDirty, isSubmitting } = form.formState;
 
-  const onSubmit = (values: FormValues) => {
-    console.log(values);
-    execute(values);
-    form.reset();
-  };
+  const onSubmit = (values: FormValues) => execute(values);
 
   return (
     <AuthCard

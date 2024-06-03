@@ -7,31 +7,53 @@ import { action } from "@/lib/safe-action";
 import { loginValidationSchema, registerValidationSchema } from "@/types";
 
 import { db } from "..";
+import { signIn } from "../auth";
 import { users } from "../schemas";
-import { generateVerificationEmailToken } from "./tokens";
+
 import { sendVerificationEmail } from "./email";
+import {
+  getVerificationTokenByEmail,
+  generateVerificationEmailToken,
+} from "./tokens";
+import { AuthError } from "next-auth";
 
 /**
  * Handles email sign-in by validating the user's email and checking if the email is verified.
  * @param params - The login parameters.
  * @param params.email - The email address of the user trying to sign in.
+ * @param params.password - The password of the user trying to sign in.
  * @returns A promise that resolves to the user data if successful, or an error message if unsuccessful.
  */
-export const emailSignIn = action(loginValidationSchema, async ({ email }) => {
-  const user = await db.query.users.findFirst({
-    where: eq(users.email, email),
-  });
+export const emailSignIn = action(
+  loginValidationSchema,
+  async ({ email, password }) => {
+    try {
+      const user = await db.query.users.findFirst({
+        where: eq(users.email, email),
+      });
 
-  if (!user) {
-    return { error: "User not found" };
+      if (!user) {
+        return { error: "User not found" };
+      }
+
+      if (!user.emailVerified) {
+        const verificationToken = await getVerificationTokenByEmail(user.email);
+        if (verificationToken) {
+          await sendVerificationEmail(user.email, verificationToken.token);
+        }
+        return { error: "Sent verification code to email" };
+      }
+
+      await signIn("credentials", { email, password });
+
+      return { success: user };
+    } catch (error) {
+      if (error instanceof AuthError && error.type === "CredentialsSignin") {
+        return { error: "Email or password is not correct" };
+      }
+    }
   }
-
-  if (!user.emailVerified) {
-    return { error: "Email is not verified" };
-  }
-
-  return { succes: user };
-});
+);
 
 /**
  * Handles email registration by creating a new user, hashing the password, and sending a verification email.
