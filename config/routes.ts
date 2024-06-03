@@ -1,5 +1,5 @@
 const Auth = {
-  Home: "auth",
+  Home: "/auth",
   Login: "login",
   Register: "register",
   ResetPassword: "reset-password",

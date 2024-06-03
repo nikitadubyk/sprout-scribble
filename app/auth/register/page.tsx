@@ -16,9 +16,9 @@ import { FormValues, defaultValues, registerValidationSchema } from "./config";
 
 const { Login } = Routes.Auth;
 
-/*
+/**
  * Register page with form.
- **/
+ */
 export default function Register() {
   const { toast } = useToast();
 
@@ -47,7 +47,6 @@ export default function Register() {
   const { isDirty, isSubmitting } = form.formState;
 
   const onSubmit = (values: FormValues) => {
-    console.log(values);
     execute(values);
     form.reset();
   };

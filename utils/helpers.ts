@@ -16,6 +16,9 @@ export const joinStrings = (
   return data.length === 0 ? placeholder ?? "" : data.join(separator);
 };
 
+/**
+ * Retrieves the base URL of the application.
+ */
 export const getBaseURL = () => {
   if (typeof window !== "undefined") return;
   if (process.env.VERCEL_URL) return `https://${process.env.DOMAIN_URL}`;

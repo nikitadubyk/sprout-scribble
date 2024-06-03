@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
+import { Toaster } from "@/components/ui/toaster";
 import Navigation from "@/components/navigation/navigation";
 
 import "./globals.css";
@@ -23,6 +24,7 @@ export default function RootLayout({
       <body className={cn(inter.className, "px-6 md:px-12 max-w-7xl mx-auto")}>
         <Navigation />
         {children}
+        <Toaster />
       </body>
     </html>
   );
