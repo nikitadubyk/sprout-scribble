@@ -32,6 +32,7 @@ export default function Login() {
     onSuccess: () => {
       form.reset();
       route.push("/");
+      // TODO: remove it when next auth fix bug with update useSession
       route.refresh();
     },
   });

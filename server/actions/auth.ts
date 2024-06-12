@@ -2,6 +2,7 @@
 
 import bcrypt from "bcrypt";
 import { eq } from "drizzle-orm";
+import { AuthError } from "next-auth";
 
 import { action } from "@/lib/safe-action";
 import { loginValidationSchema, registerValidationSchema } from "@/types";
@@ -15,7 +16,6 @@ import {
   getVerificationTokenByEmail,
   generateVerificationEmailToken,
 } from "./tokens";
-import { AuthError } from "next-auth";
 
 /**
  * Handles email sign-in by validating the user's email and checking if the email is verified.
